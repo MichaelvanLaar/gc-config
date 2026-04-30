@@ -179,6 +179,7 @@ Ongoing:  copilot-optimize               ← Periodic hygiene checks; incorporat
 - **Path-specific scoping**: use `.github/instructions/*.instructions.md` with `applyTo` glob patterns to deliver frontend, backend, or test-specific context only when relevant — avoids bloating the global file.
 - **`applyTo` correctness**: invalid glob patterns silently fail. The skills check that every `applyTo` value is a valid glob.
 - **`copilot-setup-steps.yml` constraints**: the workflow job must be named exactly `copilot-setup-steps` or Copilot ignores it. Runtime is capped at 59 minutes. The skills enforce both.
+- **Dependency caching in setup steps**: without caching, every agent session reinstalls all dependencies from scratch. The skills generate and check for ecosystem-specific caching: `actions/setup-node@v4` with `cache: 'npm'`, `actions/setup-python@v5` with `cache: 'pip'`, `actions/setup-go@v5` with `cache: true`, and `actions/cache@v4` for Cargo.
 - **Remove anti-patterns**: personality instructions ("be concise"), file-by-file descriptions, and rules that a linter already enforces all waste the character budget without adding value.
 - **Commands section**: a `## Commands` section with the project's build, test, and lint commands gives Copilot the verification loop it needs to self-check its own work.
 - **`AGENTS.md` consistency**: when both `AGENTS.md` and `copilot-instructions.md` exist, the skills check for contradictions between them.
@@ -197,6 +198,8 @@ Unlike the companion [claude-code-config-skills](https://github.com/MichaelvanLa
 | Learnings auto-loading                                  | `CLAUDE.md` can reference `learnings.md` so corrections load automatically; `copilot-learnings.md` is passive — run `copilot-optimize` explicitly to incorporate corrections |
 | MCP server automation via files                         | MCP servers are configured in GitHub repository settings UI only                                                                                                             |
 | `.claude/context/` shared domain folder                 | No equivalent; content must live in `copilot-instructions.md` or path-specific files                                                                                         |
+| Content exclusions (file patterns to hide from Copilot) | Configured in GitHub UI only — Organization or repository Settings → Copilot → Content exclusion                                                                             |
+| Spending limits / budget caps                           | Configured in GitHub UI only — Organization Settings → Billing → GitHub Copilot                                                                                              |
 
 ## Compatibility
 

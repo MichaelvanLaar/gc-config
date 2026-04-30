@@ -93,7 +93,9 @@ If a package manager or build tool is detected (`package.json`, `requirements.tx
 
 This workflow runs before each Coding Agent session to pre-install dependencies, reducing failed runs and wasted tokens. Requirements: the job name **must** be `copilot-setup-steps`; total runtime must stay under 59 minutes.
 
-Example template (adapt to detected toolchain):
+Example templates (adapt to detected toolchain — always include dependency caching to reduce Actions minutes consumed on every agent session):
+
+**Node.js (npm):**
 
 ```yaml
 name: "Copilot Setup Steps"
@@ -103,11 +105,72 @@ jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
 ```
+
+**Python (pip):**
+
+```yaml
+name: "Copilot Setup Steps"
+on: workflow_dispatch
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+```
+
+**Go:**
+
+```yaml
+name: "Copilot Setup Steps"
+on: workflow_dispatch
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          cache: true
+      - run: go mod download
+```
+
+**Rust (Cargo):**
+
+```yaml
+name: "Copilot Setup Steps"
+on: workflow_dispatch
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: cargo fetch
+```
+
+Use `actions/setup-node@v4 cache: 'npm'` (or `'yarn'`/`'pnpm'`), `actions/setup-python@v5 cache: 'pip'`, `actions/setup-go@v5 cache: true`, and `actions/cache@v4` for Cargo. Caching is not optional — without it, every agent session reinstalls all dependencies from scratch.
 
 If no build system is found, skip this step and note it in the summary.
 

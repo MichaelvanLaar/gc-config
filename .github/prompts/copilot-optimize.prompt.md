@@ -26,6 +26,7 @@ Check for:
 - **Missing Commands section** or only vague commands → should fix
 - **Invalid `applyTo`** in any `.github/instructions/*.instructions.md` file → must fix
 - **Missing `copilot-setup-steps.yml`** when a build system is detected → should fix
+- **Missing dependency caching** in `copilot-setup-steps.yml` (`actions/setup-node` without `cache:`, `actions/setup-python` without `cache:`, `actions/setup-go` without `cache: true`, raw Cargo commands without `actions/cache@v4`) → should fix; every agent session otherwise reinstalls all dependencies from scratch
 - **Wrong job name** in `copilot-setup-steps.yml` (must be `copilot-setup-steps`) → must fix
 - **Contradictions** between `AGENTS.md` and `copilot-instructions.md` → must fix
 - **No architecture overview** → nice to have

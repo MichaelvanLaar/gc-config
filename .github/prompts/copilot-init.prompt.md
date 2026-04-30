@@ -40,7 +40,7 @@ Set up a GitHub Copilot Coding Agent configuration for this project.
 **Optionally also create:**
 
 - `.github/instructions/*.instructions.md` — if the project has distinct subsystems with different conventions; use `applyTo: "<glob>"` frontmatter to scope each file
-- `.github/workflows/copilot-setup-steps.yml` — if a package manager or build tool is detected; job name must be `copilot-setup-steps`, runtime under 59 min
+- `.github/workflows/copilot-setup-steps.yml` — if a package manager or build tool is detected; job name must be `copilot-setup-steps`, runtime under 59 min; always include dependency caching (`actions/setup-node@v4` with `cache: 'npm'`, `actions/setup-python@v5` with `cache: 'pip'`, `actions/setup-go@v5` with `cache: true`, or `actions/cache@v4` for Cargo) — without caching every agent session reinstalls all dependencies from scratch
 - `AGENTS.md` — if other AI tool directories (`.claude/`, `.gemini/`, `.codex/`) are present
 
 **After creating files**, list what was created, note any TODO placeholders, and mention:

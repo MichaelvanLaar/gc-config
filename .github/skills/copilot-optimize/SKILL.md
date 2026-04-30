@@ -84,6 +84,11 @@ If the project has a build system, package manager, or dependency manager:
 
 - **Build system detected but `copilot-setup-steps.yml` absent** → flag as "should fix"; pre-installing dependencies reduces failed agent sessions and token waste
 - **`copilot-setup-steps.yml` exists** → verify it has the required `copilot-setup-steps` job name; flag any structural issues as "must fix"
+- **Missing dependency caching** → flag as "should fix"; without caching, every agent session reinstalls all dependencies from scratch, wasting GitHub Actions minutes:
+  - `actions/setup-node` without `cache: 'npm'` (or `'yarn'`/`'pnpm'`) → suggest adding `cache:` parameter
+  - `actions/setup-python` without `cache: 'pip'` → suggest adding `cache:` parameter
+  - `actions/setup-go` without `cache: true` → suggest adding `cache:` parameter
+  - Raw `cargo install` / `cargo build` without `actions/cache@v4` targeting `~/.cargo/registry`, `~/.cargo/git`, and `target/` → suggest adding cache step
 
 If no build system is detected, skip this step.
 
