@@ -5,13 +5,12 @@ best-practice GitHub Copilot Coding Agent configurations.
 
 ## Key Config Files
 
-| File                                                   | Purpose                                    |
-| ------------------------------------------------------ | ------------------------------------------ |
-| `.github/plugin/marketplace.json`                      | Copilot CLI marketplace manifest           |
-| `plugins/gc-config/plugin.json`                        | Plugin manifest                            |
-| `plugins/gc-config/skills/gc-config-init/SKILL.md`     | Skill: bootstrap GitHub Copilot config     |
-| `plugins/gc-config/skills/gc-config-optimize/SKILL.md` | Skill: audit GitHub Copilot config         |
-| `install.sh`                                           | Deprecated shim pointing to plugin install |
+| File                                                   | Purpose                                |
+| ------------------------------------------------------ | -------------------------------------- |
+| `.github/plugin/marketplace.json`                      | Copilot CLI marketplace manifest       |
+| `plugins/gc-config/plugin.json`                        | Plugin manifest                        |
+| `plugins/gc-config/skills/gc-config-init/SKILL.md`     | Skill: bootstrap GitHub Copilot config |
+| `plugins/gc-config/skills/gc-config-optimize/SKILL.md` | Skill: audit GitHub Copilot config     |
 
 ## Setup
 
