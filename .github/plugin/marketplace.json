@@ -1,0 +1,17 @@
+{
+  "name": "gc-config",
+  "metadata": {
+    "description": "GitHub Copilot CLI skills for setting up and maintaining best-practice GitHub Copilot configurations",
+    "version": "1.0.0"
+  },
+  "owner": { "name": "Michael van Laar" },
+  "plugins": [
+    {
+      "name": "gc-config",
+      "source": "./plugins/gc-config",
+      "description": "Bootstrap and audit GitHub Copilot configurations",
+      "version": "1.0.0",
+      "skills": ["./skills/gc-config-init", "./skills/gc-config-optimize"]
+    }
+  ]
+}

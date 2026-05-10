@@ -1,0 +1,9 @@
+{
+  "name": "gc-config",
+  "description": "Bootstrap and audit a best-practice GitHub Copilot configuration",
+  "version": "1.0.0",
+  "author": { "name": "Michael van Laar" },
+  "homepage": "https://github.com/MichaelvanLaar/gc-config",
+  "repository": "https://github.com/MichaelvanLaar/gc-config",
+  "license": "MIT"
+}
