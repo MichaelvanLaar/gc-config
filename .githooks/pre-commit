@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
+# Scan for secrets before committing (skip gracefully if gitleaks not installed)
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks git --pre-commit --staged || exit 1
+else
+  echo "gitleaks not installed — skipping secret scan (install: brew install gitleaks)"
+fi
 # Keep CLAUDE.md config file table in sync
 bash scripts/sync-config-table.sh

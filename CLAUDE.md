@@ -6,15 +6,15 @@ GitHub Copilot CLI plugin providing two skills (`/gc-config-init`, `/gc-config-o
 
 | File | Purpose |
 |------|---------|
-| `AGENTS.md` | Multi-tool agent instructions (Copilot, Codex, Cursor, etc.)   |
-| `.claude/settings.json` | Permissions, environment variables                             |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync                           |
-| `.github/plugin/marketplace.json` | Copilot CLI marketplace manifest                               |
-| `.gitignore` | Git ignore patterns                                            |
-| `plugins/gc-config/plugin.json` | Plugin manifest                                                |
-| `plugins/gc-config/skills/gc-config-init/SKILL.md` | Skill: bootstrap GitHub Copilot config                         |
-| `plugins/gc-config/skills/gc-config-optimize/SKILL.md` | Skill: audit GitHub Copilot config                             |
-| `scripts/sync-config-table.sh` | Auto-syncs Key Config Files table on commit                    |
+| `AGENTS.md` | Multi-tool agent instructions (Copilot, Codex, Cursor, etc.)    |
+| `.claude/settings.json` | Permissions, environment variables                              |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync                            |
+| `.github/plugin/marketplace.json` | Copilot CLI marketplace manifest                                |
+| `.gitignore` | Git ignore patterns                                             |
+| `plugins/gc-config/plugin.json` | Plugin manifest                                                 |
+| `plugins/gc-config/skills/gc-config-init/SKILL.md` | Skill: bootstrap GitHub Copilot config                          |
+| `plugins/gc-config/skills/gc-config-optimize/SKILL.md` | Skill: audit GitHub Copilot config                              |
+| `scripts/sync-config-table.sh` | Auto-syncs Key Config Files table on commit                     |
 
 ## Setup
 
