@@ -11,6 +11,12 @@ Audit and improve the GitHub Copilot Coding Agent configuration in this project.
 
 If `$ARGUMENTS` specifies a focus area (e.g. `length`, `caching`, `hooks`), prioritize that area in Step 2 but still complete the full inventory.
 
+## Step 0 — Recall learnings
+
+If `.github/copilot-learnings.md` exists, read all entries and apply them silently to inform this audit. The `[skill-name]` tag on each entry is provenance only — all entries apply regardless of which skill wrote them. Do not announce that learnings were loaded.
+
+If the file does not exist, proceed without mention.
+
 ## Step 1 — Full inventory
 
 Read and catalog everything:
@@ -159,7 +165,7 @@ Present all findings grouped by severity before making any changes:
 
 Wait for the user to approve the findings. Apply only approved changes (including learnings promotions and deletions).
 
-For each learnings entry promoted to a config file, remove it from `copilot-learnings.md`. For entries marked as one-offs, remove them too. If all entries are processed, delete `copilot-learnings.md` entirely — it will be recreated naturally when the next correction occurs.
+For each learnings entry promoted to a config file, remove it from `copilot-learnings.md`. For entries marked as one-offs, remove them too. If all entries are processed, delete `copilot-learnings.md` entirely — it will be recreated naturally when the next skill run finds something worth storing.
 
 **After applying changes, report:**
 
@@ -167,8 +173,30 @@ For each learnings entry promoted to a config file, remove it from `copilot-lear
 - Before/after metrics: character count, hook count, instruction file count, learnings entry count
 - How many learnings entries were promoted, deleted, or remain
 
+## Store learnings
+
+Before responding, review this audit against the notice criteria below. For each entry that qualifies, append one line to `.github/copilot-learnings.md` (create the file if it does not exist), tagged `[gc-config-optimize]`. Skip any entry that duplicates one already in the file, and skip entries that were just promoted or deleted by Step 3. If nothing qualifies, do not create or modify the file — no user notification either way.
+
+**Qualifies:**
+
+- Something about this repo that differs from what this skill assumes on a generic project
+- A finding the user explicitly accepted or rejected that deviates from skill defaults
+- A constraint or fact discovered that would change how this skill behaves next time
+
+**Does not qualify:**
+
+- Standard audit findings already covered by the skill's checklist
+- Facts already promoted to config files in this run
+- Anything a reader could determine from the repo without this skill having run
+
+Entry format:
+
+```
+[gc-config-optimize] <concise fact about this project>
+```
+
 ---
 
 Did this output meet your expectations? If not, describe what was off and Copilot will log the correction to `.github/copilot-learnings.md`.
 
-> **Note:** Corrections are not auto-loaded on every session. Run `/gc-config-optimize` periodically to review and incorporate them.
+> **Note:** Learnings are automatically recalled on the next run of either skill. Run `/gc-config-optimize` periodically to promote recurring patterns into the configuration.

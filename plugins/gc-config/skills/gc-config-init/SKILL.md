@@ -7,6 +7,12 @@ argument-hint: "[optional: brief project description]"
 
 Set up a GitHub Copilot Coding Agent configuration for this project.
 
+## Step 0 — Recall learnings
+
+If `.github/copilot-learnings.md` exists, read all entries and apply them silently to inform this run. The `[skill-name]` tag on each entry is provenance only — all entries apply regardless of which skill wrote them. Do not announce that learnings were loaded.
+
+If the file does not exist, proceed without mention.
+
 ## Step 1 — Gather context
 
 Before creating any files:
@@ -189,10 +195,32 @@ List every file created, note any `TODO` placeholders that still need filling in
 - **Fill in TODO commands** once the build/test/lint commands are known.
 - **MCP servers:** For Copilot CLI, MCP servers can be configured in `~/.copilot/mcp-config.json`. For the Coding Agent, use GitHub repository Settings → Copilot → MCP servers.
 - **Run `/gc-config-optimize`** once the project has more content for a full audit.
-- **Learnings:** When Copilot makes a mistake and the user corrects it, Copilot logs a one-line correction to `.github/copilot-learnings.md`. Run `/gc-config-optimize` periodically to incorporate these into the configuration.
+- **Learnings:** Project-specific discoveries are automatically stored in `.github/copilot-learnings.md` and recalled on future runs of either skill. Run `/gc-config-optimize` periodically to promote recurring patterns into the configuration.
+
+## Store learnings
+
+Before responding, review this run against the notice criteria below. For each entry that qualifies, append one line to `.github/copilot-learnings.md` (create the file if it does not exist), tagged `[gc-config-init]`. Skip any entry that duplicates one already in the file. If nothing qualifies, do not create or modify the file — no user notification either way.
+
+**Qualifies:**
+
+- Something about this repo that differs from what this skill assumes on a generic project
+- A suggestion the user explicitly accepted or rejected that deviates from skill defaults
+- A constraint or fact discovered that would change how this skill behaves next time
+
+**Does not qualify:**
+
+- Standard skill behavior applied without deviation
+- Facts already present in AGENTS.md, CLAUDE.md, or other config files
+- Anything a reader could determine from the repo without this skill having run
+
+Entry format:
+
+```
+[gc-config-init] <concise fact about this project>
+```
 
 ---
 
 Did this output meet your expectations? If not, describe what was off and Copilot will log the correction to `.github/copilot-learnings.md`.
 
-> **Note:** Corrections are not auto-loaded on every session. Run `/gc-config-optimize` periodically to review and incorporate them.
+> **Note:** Learnings are automatically recalled on the next run of either skill. Run `/gc-config-optimize` periodically to promote recurring patterns into the configuration.

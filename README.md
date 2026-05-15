@@ -145,14 +145,14 @@ Ongoing:  /gc-config-optimize               ← Periodic hygiene checks; incorpo
 
 ### Configuration files
 
-| File                                        | Created by                        | Purpose                                                                                                                          |
-| ------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/copilot-instructions.md`           | `/gc-config-init`                 | Global agent instructions, loaded every session (limit: ~8,000 characters)                                                       |
-| `.github/instructions/*.instructions.md`    | `/gc-config-init` (optional)      | Path-specific instructions, scoped via `applyTo` glob in frontmatter                                                             |
-| `.github/workflows/copilot-setup-steps.yml` | `/gc-config-init` (optional)      | Pre-install dependencies before Copilot runs; job must be named `copilot-setup-steps`; max 59 minutes                            |
-| `AGENTS.md`                                 | `/gc-config-init` (optional)      | Vendor-neutral agent instructions for multi-tool AI environments                                                                 |
-| `.github/copilot-learnings.md`              | Created by Copilot on corrections | Accumulates one-line corrections from skill feedback steps; reviewed and incorporated by `/gc-config-optimize`                   |
-| `.github/hooks/hooks.json`                  | `/gc-config-init` (optional)      | PostToolUse formatter hook (runs after file edits) and optional preToolUse blocking hook (rejects tool calls on sensitive files) |
+| File                                        | Created by                   | Purpose                                                                                                                                                                                              |
+| ------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/copilot-instructions.md`           | `/gc-config-init`            | Global agent instructions, loaded every session (limit: ~8,000 characters)                                                                                                                           |
+| `.github/instructions/*.instructions.md`    | `/gc-config-init` (optional) | Path-specific instructions, scoped via `applyTo` glob in frontmatter                                                                                                                                 |
+| `.github/workflows/copilot-setup-steps.yml` | `/gc-config-init` (optional) | Pre-install dependencies before Copilot runs; job must be named `copilot-setup-steps`; max 59 minutes                                                                                                |
+| `AGENTS.md`                                 | `/gc-config-init` (optional) | Vendor-neutral agent instructions for multi-tool AI environments                                                                                                                                     |
+| `.github/copilot-learnings.md`              | Auto-created by skills       | Accumulates project-specific discoveries from each skill run (Store step); recalled silently at the start of every run (Recall step); recurring patterns promoted to config by `/gc-config-optimize` |
+| `.github/hooks/hooks.json`                  | `/gc-config-init` (optional) | PostToolUse formatter hook (runs after file edits) and optional preToolUse blocking hook (rejects tool calls on sensitive files)                                                                     |
 
 ### Key best practices applied
 
@@ -164,23 +164,23 @@ Ongoing:  /gc-config-optimize               ← Periodic hygiene checks; incorpo
 - **Remove anti-patterns**: personality instructions ("be concise"), file-by-file descriptions, and rules that a linter already enforces all waste the character budget without adding value.
 - **Commands section**: a `## Commands` section with the project's build, test, and lint commands gives Copilot the verification loop it needs to self-check its own work.
 - **`AGENTS.md` consistency**: when both `AGENTS.md` and `copilot-instructions.md` exist, the skills check for contradictions between them.
-- **Learning and improvement**: each skill ends with a feedback step. When Copilot makes a mistake, the correction is logged as a one-line entry in `.github/copilot-learnings.md`. Running `/gc-config-optimize` periodically reviews these entries, promotes recurring patterns into the configuration, and deletes one-offs — keeping the learnings file lean or removing it until the next correction cycle.
+- **Learning and improvement**: both skills use an observe-notice-store-recall loop. At the start of each run, the skill silently reads `.github/copilot-learnings.md` (if present) and applies all entries to inform its decisions. At the end, it appends any project-specific discoveries — deviations from generic defaults, user choices, constraints found — to the same file. Running `/gc-config-optimize` periodically reviews accumulated entries, promotes recurring patterns into the configuration, and deletes one-offs.
 - **PostToolUse formatter hook**: `.github/hooks/hooks.json` with a `postToolUse` hook runs a formatter script automatically after every file edit — same effect as Claude Code's PostToolUse hook. The skills create and audit this hook. Hook scripts must exit 0 (they cannot block after the fact); use `|| true` on the formatter command.
 
 ## What these skills cannot configure
 
 Unlike the companion [cc-config](https://github.com/MichaelvanLaar/cc-config) for Claude Code, these skills target GitHub Copilot's configuration surface. Several Claude Code features have no Copilot equivalent:
 
-| Claude Code feature                                     | Status in GitHub Copilot                                                                                                                                                        |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `permissions.deny` / `permissions.allow`                | `preToolUse` hooks in `.github/hooks/hooks.json` provide a partial equivalent — blocking scripts that can reject tool calls before they execute                                 |
-| Autocompact control (`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`) | No equivalent                                                                                                                                                                   |
-| `@`-import progressive disclosure                       | `copilot-instructions.md` loads in full every session                                                                                                                           |
-| Learnings auto-loading                                  | `CLAUDE.md` can reference `learnings.md` so corrections load automatically; `copilot-learnings.md` is passive — run `/gc-config-optimize` explicitly to incorporate corrections |
-| MCP server automation via files                         | Copilot CLI supports `~/.copilot/mcp-config.json` (file-based, per machine); the Coding Agent requires GitHub repository Settings → Copilot → MCP servers                       |
-| `.claude/context/` shared domain folder                 | No equivalent; content must live in `copilot-instructions.md` or path-specific files                                                                                            |
-| Content exclusions (file patterns to hide from Copilot) | Configured in GitHub UI only — Organization or repository Settings → Copilot → Content exclusion                                                                                |
-| Spending limits / budget caps                           | Configured in GitHub UI only — Organization Settings → Billing → GitHub Copilot                                                                                                 |
+| Claude Code feature                                     | Status in GitHub Copilot                                                                                                                                      |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `permissions.deny` / `permissions.allow`                | `preToolUse` hooks in `.github/hooks/hooks.json` provide a partial equivalent — blocking scripts that can reject tool calls before they execute               |
+| Autocompact control (`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`) | No equivalent                                                                                                                                                 |
+| `@`-import progressive disclosure                       | `copilot-instructions.md` loads in full every session                                                                                                         |
+| Learnings auto-loading                                  | Supported via the observe-notice-store-recall loop baked into both skills: learnings are stored after each run and recalled silently at the start of the next |
+| MCP server automation via files                         | Copilot CLI supports `~/.copilot/mcp-config.json` (file-based, per machine); the Coding Agent requires GitHub repository Settings → Copilot → MCP servers     |
+| `.claude/context/` shared domain folder                 | No equivalent; content must live in `copilot-instructions.md` or path-specific files                                                                          |
+| Content exclusions (file patterns to hide from Copilot) | Configured in GitHub UI only — Organization or repository Settings → Copilot → Content exclusion                                                              |
+| Spending limits / budget caps                           | Configured in GitHub UI only — Organization Settings → Billing → GitHub Copilot                                                                               |
 
 ## Compatibility
 
